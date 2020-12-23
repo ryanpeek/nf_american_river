@@ -243,8 +243,6 @@ ggplot() +
                    nudge_y = 0.5, nudge_x = .2) +
   annotate(geom = "text", x=.5, y=74, label="3,000 cfs", color="gray30") +
   annotate(geom = "text", x=.34, y=32, label="1,500 cfs", color="gray30")
-#geom_mark_ellipse(data=fdc_hrly_6, aes(x=fdc, y=cms, filter = cfs ==3410, label = 'Occurs <1% of the time', 
-#                       description = "Flows >3,400 cfs (~96 cms) in June are quite rare"), label.buffer = unit(40, 'mm'))
 
 ggsave(filename = "figs/nfa_flow_dur_curves_hourly_apr_jun.png", width = 10, height = 7, units = "in", dpi = 300)
 
@@ -258,8 +256,5 @@ nfa_hrly %>% filter(WY>2013, month(dateTime)>=5, month(dateTime)<7) %>%
   theme_bw(base_size = 9) +
   facet_wrap(.~WY, scales = "free_x")
 
-ggsave(filename = "figs/nfa_hrly_may_jun.png", width = 10, height = 7, units = "in")
+ggsave(filename = "figs/nfa_hrly_may_jun_post2013.png", width = 10, height = 7, units = "in")
 
-# all yrs continuous
-# nfa_hrly %>% filter(WY>2013) %>% 
-# ggplot(.) + geom_line(aes(x=dateTime, y=Flow_Inst), col="dodgerblue")
