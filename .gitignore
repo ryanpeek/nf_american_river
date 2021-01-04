@@ -4,3 +4,4 @@
 .Ruserdata
 .DS_Store
 rosm.cache
+data_output/*.tif
