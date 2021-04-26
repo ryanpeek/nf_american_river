@@ -51,7 +51,7 @@ nfa_hrly <- nfa_updated
 ## HOURLY: Make Some Plots ---------------------------------------------------------
 
 # Plot last 3 years
-plotyrs <- c(2018, 2019, 2020, 2021)
+plotyrs <- c(2019, 2020, 2021)
 filter(nfa_hrly, WY %in% plotyrs, month(dateTime) %in% c(1:12)) %>% 
   ggplot() + geom_line(aes(x=dateTime, y=Flow_Inst), col="skyblue") +
   geom_vline(xintercept = max(nfa_hrly$dateTime), col="sienna", lty=2) + # current time
@@ -124,8 +124,9 @@ summary(nfa_daily)
 
 # Daily Plots -------------------------------------------------------------
 
+yrspan <- c(2018:2021)
 # plot to check
-filter(nfa_daily, WY %in% c(2017:2021)) %>% #, month(Date)>3 & month(Date)<9) %>% 
+filter(nfa_daily, WY %in% yrspan) %>% #, month(Date)>3 & month(Date)<9) %>% 
   ggplot() + 
   ggdark::dark_theme_bw(base_family = "Roboto Condensed") +
   scale_x_date("", date_breaks = "3 months", 
@@ -134,25 +135,46 @@ filter(nfa_daily, WY %in% c(2017:2021)) %>% #, month(Date)>3 & month(Date)<9) %>
   labs(x="", y="Discharge (cfs)", title="Daily Flow NF American",
        caption="Data from USGS 11427000 \n (https://waterdata.usgs.gov/ca/nwis/uv?site_no=11427000) \nDashed line is current day of month")+
   geom_line(aes(x=Date, y=Flow), color="skyblue", alpha=0.9) +
+  geom_vline(xintercept = max(nfa_daily$Date), col="sienna", lty=2) + # current time
   geom_point(aes(x=max(nfa_daily$Date), y=nfa_daily$Flow[which.max(nfa_daily$Date)]), fill="sienna", pch=21, size=4) +
   theme(axis.text.x = element_text(angle = 270, vjust=.5))
 
-ggsave(filename = glue("figs/nfa_daily_flow_recent_5yrs.png"), width = 10, height = 7, units="in", dpi=300)
+ggsave(filename = glue("figs/nfa_daily_flow_recent_{length(yrspan)}yrs.png"), width = 10, height = 7, units="in", dpi=300)
 
-# plot to check
-filter(nfa_daily, WY==2011 | WY==2017| WY==2019,
+# WET Years plot to check
+yrspan <- c(2011, 2017, 2019)
+filter(nfa_daily, WY %in% yrspan,
        month(Date)>3 & month(Date)<9) %>% 
   ggplot(aes(x=Date, y=Flow)) + 
   geom_line(color="skyblue", alpha=0.9) +
   ggdark::dark_theme_bw(base_family = "Roboto Condensed") +
   theme(axis.text.x = element_text(angle = 270, vjust=.5)) +
-  labs(x="", y="Discharge (cfs)", title="Daily Flow NF American",
-       caption="Data from USGS 11427000 \n (https://waterdata.usgs.gov/ca/nwis/uv?site_no=11427000) \nDashed line is current day of month")+
+  labs(x="", y="Discharge (cfs)", title="Daily Flow NF American: Wet Years",
+       caption="Data from USGS 11427000 \n (https://waterdata.usgs.gov/ca/nwis/uv?site_no=11427000)")+
   scale_x_date("", date_breaks = "1 months", 
                date_labels = "%b", 
                date_minor_breaks = "2 weeks")+
   facet_wrap(.~WY, scales = "free_x")
 
-ggsave(filename = "figs/nfa_daily_flow_wet_yrs_dark.png", width = 10, height = 7, units="in", dpi=300)
+ggsave(filename = glue("figs/nfa_daily_flow_wet_yrs_since_{min(yrspan)}_dark.png"), width = 10, height = 7, units="in", dpi=300)
+
+# DRY Years plot to check
+yrspan <- c(2014, 2015, 2020, 2021)
+monspan <- c(12,1:4)
+filter(nfa_daily, WY %in% yrspan,
+       month(Date) %in% monspan) %>% 
+  ggplot(aes(x=Date, y=Flow)) + 
+  geom_line(color="salmon", alpha=0.9) +
+  ggdark::dark_theme_bw(base_family = "Roboto Condensed") +
+  theme(axis.text.x = element_text(angle = 270, vjust=.5)) +
+  labs(x="", y="Discharge (cfs)", title="Daily Flow NF American: Dry Years",
+       caption="Data from USGS 11427000 \n (https://waterdata.usgs.gov/ca/nwis/uv?site_no=11427000)")+
+  scale_x_date("", date_breaks = "1 months", 
+               date_labels = "%b", 
+               date_minor_breaks = "2 weeks")+
+  facet_wrap(.~WY, scales = "free_x")
+
+ggsave(filename = glue("figs/nfa_daily_flow_dry_yrs_since_{min(yrspan)}_dark.png"), width = 10, height = 7, units="in", dpi=300)
 #  ggforce::geom_mark_circle(data=nfa_daily, aes(x=Date, y=Flow, filter= Date==nfa_daily$Date[which.max(nfa_daily$Date)]), color="sienna")
+
 
