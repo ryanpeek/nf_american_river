@@ -62,7 +62,7 @@ quantile(nfa_daily$Flow, probs = c(1- seq(0.01,.1,.01)))
 (props <- nrow(nfa_daily_filt)/(max(nfa_daily$WY) - min(nfa_daily$WY)))
 
 # get WYT
-wyt <- read_csv("data/WYT_1906-2020.csv") %>% 
+wyt <- read_csv("data/WYT_1906-2021.csv") %>% 
   mutate(Sac_WY_type=factor(Sac_WY_type, levels=c("W","AN","BN","D","C")))
 
 # join w data
