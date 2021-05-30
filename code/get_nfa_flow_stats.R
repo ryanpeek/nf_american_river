@@ -44,9 +44,9 @@ ecdf(nfa_daily_filt$Flow)(3327) # so 1 - this is prob of getting a flow at this 
 # Calc Daily Exceedance Days -----------------------------------------
 
 # number of days that flows exceed X amount
-flowX <- 3000
-monthS <- 5
-monthE <- 8
+flowX <- 1500 # use 3000 generally
+monthS <- 3  # standard is 4
+monthE <- 4 # standard is 7
 
 # filter data:
 nfa_daily_filt <- nfa_daily %>% 
@@ -62,7 +62,7 @@ quantile(nfa_daily$Flow, probs = c(1- seq(0.01,.1,.01)))
 (props <- nrow(nfa_daily_filt)/(max(nfa_daily$WY) - min(nfa_daily$WY)))
 
 # get WYT
-wyt <- read_csv("data/WYT_1906-2020.csv") %>% 
+wyt <- read_csv("data/WYT_1906-2021.csv") %>% 
   mutate(Sac_WY_type=factor(Sac_WY_type, levels=c("W","AN","BN","D","C")))
 
 # join w data
@@ -256,5 +256,23 @@ nfa_hrly %>% filter(WY>2013, month(dateTime)>=5, month(dateTime)<7) %>%
   theme_bw(base_size = 9) +
   facet_wrap(.~WY, scales = "free_x")
 
-ggsave(filename = "figs/nfa_hrly_may_jun_post2013.png", width = 10, height = 7, units = "in")
+#ggsave(filename = "figs/nfa_hrly_may_jun_post2013.png", width = 10, height = 7, units = "in")
 
+
+
+## Comparing Flow Years
+
+yrspan <- c(1977, 2008, 2021)
+monspan <- c(10:12,1:9)
+filter(nfa_daily, WY %in% yrspan,
+       month(Date) %in% monspan) %>%  
+  ggplot(aes(x=Date, y=Flow)) + 
+  geom_line(color="salmon", alpha=0.9) +
+  ggdark::dark_theme_bw(base_family = "Roboto Condensed") +
+  theme(axis.text.x = element_text(angle = 270, vjust=.5)) +
+  labs(x="", y="Discharge (cfs)", title="Daily Flow NF American: Dry Years",
+       caption="Data from USGS 11427000 \n (https://waterdata.usgs.gov/ca/nwis/uv?site_no=11427000)")+
+  scale_x_date("", date_breaks = "1 months", 
+               date_labels = "%b", 
+               date_minor_breaks = "2 weeks")+
+  facet_wrap(.~WY, scales = "free_x")
