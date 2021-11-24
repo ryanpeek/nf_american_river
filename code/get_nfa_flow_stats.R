@@ -44,9 +44,15 @@ ecdf(nfa_daily_filt$Flow)(3327) # so 1 - this is prob of getting a flow at this 
 # Calc Daily Exceedance Days -----------------------------------------
 
 # number of days that flows exceed X amount
+<<<<<<< HEAD
 flowX <- 1500 # use 3000 generally
 monthS <- 3  # standard is 4
 monthE <- 4 # standard is 7
+=======
+flowX <- 2000
+monthS <- 5
+monthE <- 8
+>>>>>>> a9808fcaa35efb1d9f33329b5d5a36434e6bffcf
 
 # filter data:
 nfa_daily_filt <- nfa_daily %>% 
